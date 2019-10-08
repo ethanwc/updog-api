@@ -1,9 +1,9 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as mongoose from "mongoose";
+import * as cookieParser from "cookie-parser";
 import Controller from "./interfaces/controller";
 import errorMiddleware from "./middleware/error.middleware";
-import * as cookieParser from "cookie-parser";
 
 /**
  * Initializes and launches app.

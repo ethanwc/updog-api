@@ -46,17 +46,25 @@ class PostsController implements Controller {
   /**
    * Retrieves all posts
    */
-  private getAllPosts = (
+  // private getAllPosts = (
+  //   request: express.Request,
+  //   response: express.Response
+  // ) => {
+  //   this.post.find().then(posts => {
+  //     response.send(posts);
+  //   });
+  // };
+
+  private getAllPosts = async (
     request: express.Request,
     response: express.Response
   ) => {
-    this.post.find().then(posts => {
-      response.send(posts);
-    });
+    const posts = await this.post.find().populate("author", "-password");
+    response.send(posts);
   };
 
   /**
-   * Gets a post by id
+   * Gets a post by author id
    */
   private getPostById = (
     request: express.Request,
@@ -64,7 +72,7 @@ class PostsController implements Controller {
     next: express.NextFunction
   ) => {
     const id = request.params.id;
-    this.post.findById(id).then(post => {
+    this.post.find(id).then(post => {
       if (post) {
         response.send(post);
       } else {
@@ -72,6 +80,24 @@ class PostsController implements Controller {
       }
     });
   };
+
+  //  /**
+  //  * Gets a post by id
+  //  */
+  // private getPostById = (
+  //   request: express.Request,
+  //   response: express.Response,
+  //   next: express.NextFunction
+  // ) => {
+  //   const id = request.params.id;
+  //   this.post.findById(id).then(post => {
+  //     if (post) {
+  //       response.send(post);
+  //     } else {
+  //       next(new PostNotFoundException(id));
+  //     }
+  //   });
+  // };
 
   /**
    * Updates a post
@@ -120,9 +146,10 @@ class PostsController implements Controller {
     const postData: CreatePostDto = request.body;
     const createdPost = new this.post({
       ...postData,
-      authorId: request.user._id
+      author: request.user._id
     });
     const savedPost = await createdPost.save();
+    await savedPost.populate("author").execPopulate();
     response.send(savedPost);
   };
 }

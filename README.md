@@ -1,12 +1,10 @@
-# Updog API #
+# Updog API - JSON#
 
 ### Route: localhost:5000 ###
 
 ### EndPoints ###
-### Posts ###
 
-
-### Authentication ###
+### Authentication ###  
 
 __/auth/register__  
 post - register a user  
@@ -16,6 +14,8 @@ post - login a user
 
 __/auth/logout__  
 post - log out a user  
+
+### Posts ###  
 
 __/posts__  
 _get - get all posts_  
