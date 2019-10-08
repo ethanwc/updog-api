@@ -1,5 +1,8 @@
 import { IsString } from "class-validator";
 
+/**
+ * Checks type of login json object.
+ */
 class LogInDto {
   @IsString()
   public name: string;

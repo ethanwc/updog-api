@@ -6,6 +6,9 @@ import RequestWithUser from "../interfaces/RequestWithUser";
 import userModel from "../users/user.model";
 import "../interfaces/DataStoredInToken";
 
+/**
+ * Middleware for authorization
+ */
 async function authMiddleware(
   request: RequestWithUser,
   response: Response,

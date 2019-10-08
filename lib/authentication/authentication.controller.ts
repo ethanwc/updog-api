@@ -11,6 +11,9 @@ import LogInDto from "./Login.dto";
 import User from "users/user.interface";
 import "../interfaces/TokenData";
 
+/**
+ * Handles login, register, logout for the application.
+ */
 class AuthenticationController implements Controller {
   public path = "/auth";
   public router = express.Router();
@@ -20,6 +23,9 @@ class AuthenticationController implements Controller {
     this.initializeRoutes();
   }
 
+  /**
+   * Initalizes routes requires middleware.
+   */
   private initializeRoutes() {
     this.router.post(
       `${this.path}/register`,
@@ -33,6 +39,10 @@ class AuthenticationController implements Controller {
     );
     this.router.post(`${this.path}/logout`, this.loggingOut);
   }
+
+  /**
+   * Logs user out by expiring JWT token.
+   */
   private loggingOut = (
     request: express.Request,
     response: express.Response
@@ -41,6 +51,9 @@ class AuthenticationController implements Controller {
     response.send(200);
   };
 
+  /**
+   * Creates a finite token for session representation.
+   */
   private createToken(user: User): TokenData {
     const expiresIn = 60 * 60; // an hour
     const secret = process.env.JWT_SECRET;
@@ -53,6 +66,9 @@ class AuthenticationController implements Controller {
     };
   }
 
+  /**
+   * Registers user if conditions are met.
+   */
   private registration = async (
     request: express.Request,
     response: express.Response,
@@ -74,6 +90,9 @@ class AuthenticationController implements Controller {
     }
   };
 
+  /**
+   * Login route, authorizes user and generates JWT token for session representation.
+   */
   private loggingIn = async (
     request: express.Request,
     response: express.Response,
@@ -99,6 +118,9 @@ class AuthenticationController implements Controller {
     }
   };
 
+  /**
+   * Creates cookie from JWT.
+   */
   private createCookie(tokenData: TokenData) {
     return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}`;
   }

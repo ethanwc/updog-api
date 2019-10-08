@@ -1,5 +1,8 @@
 import { IsString } from "class-validator";
 
+/**
+ * Post json data type for type checking.
+ */
 class CreatePostDto {
   @IsString()
   public author: string;

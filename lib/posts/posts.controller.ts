@@ -7,6 +7,10 @@ import CreatePostDto from "./post.dto";
 import PostNotFoundException from "../exceptions/PostNotFoundException";
 import AuthorizationMiddleware from "../middleware/auth.middleware";
 import RequestWithUser from "../interfaces/requestWithUser";
+
+/**
+ * Handles API logic for operations on posts.
+ */
 class PostsController implements Controller {
   public path = "/posts";
   public router = express.Router();
@@ -15,6 +19,10 @@ class PostsController implements Controller {
   constructor() {
     this.initializeRoutes();
   }
+
+  /**
+   * Declares post routes
+   */
 
   private initializeRoutes() {
     this.router.get(this.path, this.getAllPosts);
@@ -35,6 +43,9 @@ class PostsController implements Controller {
       );
   }
 
+  /**
+   * Retrieves all posts
+   */
   private getAllPosts = (
     request: express.Request,
     response: express.Response
@@ -44,6 +55,9 @@ class PostsController implements Controller {
     });
   };
 
+  /**
+   * Gets a post by id
+   */
   private getPostById = (
     request: express.Request,
     response: express.Response,
@@ -59,6 +73,9 @@ class PostsController implements Controller {
     });
   };
 
+  /**
+   * Updates a post
+   */
   private modifyPost = (
     request: express.Request,
     response: express.Response,
@@ -75,6 +92,9 @@ class PostsController implements Controller {
     });
   };
 
+  /**
+   * Deletes a post
+   */
   private deletePost = (
     request: express.Request,
     response: express.Response,
@@ -90,6 +110,9 @@ class PostsController implements Controller {
     });
   };
 
+  /**
+   * Creates a new post
+   */
   private createPost = async (
     request: RequestWithUser,
     response: express.Response

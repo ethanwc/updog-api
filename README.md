@@ -8,12 +8,13 @@
 
 ### Authentication ###
 
-__/auth__  
-_/auth/register_  
+__/auth/register__  
 post - register a user  
-_/auth/login_  
-post - login a user
-_/auth/logout_  
+
+__/auth/login__  
+post - login a user  
+
+__/auth/logout__  
 post - log out a user  
 
 __/posts__  

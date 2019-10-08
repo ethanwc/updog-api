@@ -1,3 +1,6 @@
+/**
+ * Superclass for exceptions
+ */
 class HttpException extends Error {
     status: number;
     message: string;

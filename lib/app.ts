@@ -4,6 +4,10 @@ import * as mongoose from "mongoose";
 import Controller from "./interfaces/controller";
 import errorMiddleware from "./middleware/error.middleware";
 import * as cookieParser from "cookie-parser";
+
+/**
+ * Initializes and launches app.
+ */
 class App {
   public app: express.Application;
 
@@ -37,6 +41,7 @@ class App {
     });
   }
 
+  //connects to mongodb
   private connectToTheDatabase() {
     const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
     const uri = `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_PATH}`;
