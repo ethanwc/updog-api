@@ -14,7 +14,7 @@ class App {
   }
 
   public listen() {
-    this.app.listen(5000, () => {
+    this.app.listen(process.env.PORT, () => {
       console.log(`App listening on the port ${process.env.PORT}`);
     });
   }
@@ -30,12 +30,8 @@ class App {
   }
 
   private connectToTheDatabase() {
-    // // const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
-    const MONGO_USER = "superloser";
-    const MONGO_PASSWORD = "m46atP6GB1SkDQlt"; //new1
-    const uri =
-      "mongodb+srv://fakeuser:m46atP6GB1SkDQlt@cluster0-zbnfs.mongodb.net/test123";
-    const MONGO_PATH = "@cluster0-6auxr.mongodb.net";
+    const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
+    const uri = `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_PATH}`;
     mongoose.connect(uri, {
       useUnifiedTopology: true,
       useNewUrlParser: true
