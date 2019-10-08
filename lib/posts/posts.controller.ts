@@ -5,6 +5,8 @@ import postModel from "./post.model";
 import validationMiddleware from "../middleware/validation.middleware";
 import CreatePostDto from "./post.dto";
 import PostNotFoundException from "../exceptions/PostNotFoundException";
+import AuthorizationMiddleware from "../middleware/auth.middleware";
+import RequestWithUser from "../interfaces/requestWithUser";
 class PostsController implements Controller {
   public path = "/posts";
   public router = express.Router();
@@ -17,18 +19,20 @@ class PostsController implements Controller {
   private initializeRoutes() {
     this.router.get(this.path, this.getAllPosts);
     this.router.get(`${this.path}/:id`, this.getPostById);
-    this.router.put(`${this.path}/:id`, this.modifyPost);
-    this.router.delete(`${this.path}/:id`, this.deletePost);
-    this.router.patch(
-      `${this.path}/:id`,
-      validationMiddleware(CreatePostDto, true),
-      this.modifyPost
-    );
-    this.router.post(
-      this.path,
-      validationMiddleware(CreatePostDto),
-      this.createPost
-    );
+    this.router
+      .all(`${this.path}/*`, AuthorizationMiddleware)
+      .patch(
+        `${this.path}/:id`,
+        validationMiddleware(CreatePostDto, true),
+        this.modifyPost
+      )
+      .delete(`${this.path}/:id`, this.deletePost)
+      .post(
+        this.path,
+        AuthorizationMiddleware,
+        validationMiddleware(CreatePostDto),
+        this.createPost
+      );
   }
 
   private getAllPosts = (
@@ -86,15 +90,17 @@ class PostsController implements Controller {
     });
   };
 
-  private createPost = (
-    request: express.Request,
+  private createPost = async (
+    request: RequestWithUser,
     response: express.Response
   ) => {
-    const postData: Post = request.body;
-    const createdPost = new this.post(postData);
-    createdPost.save().then(savedPost => {
-      response.send(savedPost);
+    const postData: CreatePostDto = request.body;
+    const createdPost = new this.post({
+      ...postData,
+      authorId: request.user._id
     });
+    const savedPost = await createdPost.save();
+    response.send(savedPost);
   };
 }
 
