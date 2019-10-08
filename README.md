@@ -5,6 +5,17 @@
 ### EndPoints ###
 ### Posts ###
 
+
+### Authentication ###
+
+__/auth__  
+_/auth/register_  
+post - register a user  
+_/auth/login_  
+post - login a user
+_/auth/logout_  
+post - log out a user  
+
 __/posts__  
 _get - get all posts_  
 post - create post  

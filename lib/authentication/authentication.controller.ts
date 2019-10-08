@@ -1,5 +1,6 @@
 import * as bcrypt from "bcrypt";
 import * as express from "express";
+import * as jwt from "jsonwebtoken";
 import UserWithThatEmailAlreadyExistsException from "../exceptions/UserWithThatEmailAlreadyExistsException";
 import WrongCredentialsException from "../exceptions/WrongCredentialsExpcetion";
 import Controller from "../interfaces/controller";
@@ -8,6 +9,7 @@ import CreateUserDto from "../users/user.dto";
 import UserModel from "../users/user.model";
 import LogInDto from "./Login.dto";
 import User from "users/user.interface";
+import "../interfaces/TokenData";
 
 class AuthenticationController implements Controller {
   public path = "/auth";
@@ -29,7 +31,15 @@ class AuthenticationController implements Controller {
       ValidationMiddleware(LogInDto),
       this.loggingIn
     );
+    this.router.post(`${this.path}/logout`, this.loggingOut);
   }
+  private loggingOut = (
+    request: express.Request,
+    response: express.Response
+  ) => {
+    response.setHeader("Set-Cookie", ["Authorization=;Max-age=0"]);
+    response.send(200);
+  };
 
   private createToken(user: User): TokenData {
     const expiresIn = 60 * 60; // an hour
