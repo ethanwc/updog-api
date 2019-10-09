@@ -4,6 +4,7 @@ import * as mongoose from "mongoose";
 import * as cookieParser from "cookie-parser";
 import Controller from "./interfaces/controller";
 import errorMiddleware from "./middleware/error.middleware";
+var cors = require("cors");
 
 /**
  * Initializes and launches app.
@@ -29,6 +30,7 @@ class App {
   private initializeMiddlewares() {
     this.app.use(bodyParser.json());
     this.app.use(cookieParser());
+    this.app.use(cors({ origin: "http://localhost:3000" }));
   }
 
   private initializeErrorHandling() {
