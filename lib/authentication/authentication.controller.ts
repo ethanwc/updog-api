@@ -85,8 +85,7 @@ class AuthenticationController implements Controller {
       });
       user.password = undefined;
       const tokenData = this.createToken(user);
-      response.setHeader("Set-Cookie", [this.createCookie(tokenData)]);
-      response.send(user);
+      response.send({ ...user, tokenData });
     }
   };
 
@@ -108,8 +107,7 @@ class AuthenticationController implements Controller {
       if (isPasswordMatching) {
         user.password = undefined;
         const tokenData = this.createToken(user);
-        response.setHeader("Set-Cookie", [this.createCookie(tokenData)]);
-        response.send(user);
+        response.send({ ...user, tokenData });
       } else {
         next(new WrongCredentialsException("1"));
       }
