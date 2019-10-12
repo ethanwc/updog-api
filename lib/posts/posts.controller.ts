@@ -2,8 +2,10 @@ import * as express from "express";
 import Controller from "../interfaces/controller";
 import Post from "./post.interface";
 import postModel from "./post.model";
+import commentModel from "../comment/comment.model";
 import validationMiddleware from "../middleware/validation.middleware";
 import CreatePostDto from "./post.dto";
+import CreateCommentDto from "../comment/comment.dto";
 import PostNotFoundException from "../exceptions/PostNotFoundException";
 import AuthorizationMiddleware from "../middleware/auth.middleware";
 import RequestWithUser from "../interfaces/requestWithUser";
@@ -40,7 +42,13 @@ class PostsController implements Controller {
         AuthorizationMiddleware,
         validationMiddleware(CreatePostDto),
         this.createPost
-      );
+      )
+      // .post(
+      //   `${this.path}/comment/:id`,
+      //   AuthorizationMiddleware,
+      //   validationMiddleware(CreateCommentDto),
+      //   this.commentOnPost
+      // );
   }
 
   /**
@@ -152,6 +160,25 @@ class PostsController implements Controller {
     await savedPost.populate("author").execPopulate();
     response.send(savedPost);
   };
+
+  /**
+   * Comment on a post by id
+   */
+
+  //  //todo: lookup user given username or id, edit post by id, add new comment and userid, 
+  // private commentOnPost = async (
+  //   request: RequestWithUser,
+  //   response: express.Response
+  // ) => {
+  //   const commentData: CreateCommentDto = request.body;
+  //   const createdComment = new this.post({
+  //     ...postData,
+  //     author: request.user._id
+  //   });
+  //   const savedPost = await createdPost.save();
+  //   await savedPost.populate("author").execPopulate();
+  //   response.send(savedPost);
+  // };
 }
 
 export default PostsController;
