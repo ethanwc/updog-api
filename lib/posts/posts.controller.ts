@@ -2,10 +2,8 @@ import * as express from "express";
 import Controller from "../interfaces/controller";
 import Post from "./post.interface";
 import postModel from "./post.model";
-import commentModel from "../comment/comment.model";
 import validationMiddleware from "../middleware/validation.middleware";
 import CreatePostDto from "./post.dto";
-import CreateCommentDto from "../comment/comment.dto";
 import PostNotFoundException from "../exceptions/PostNotFoundException";
 import AuthorizationMiddleware from "../middleware/auth.middleware";
 import RequestWithUser from "../interfaces/requestWithUser";
@@ -42,26 +40,8 @@ class PostsController implements Controller {
         AuthorizationMiddleware,
         validationMiddleware(CreatePostDto),
         this.createPost
-      )
-      // .post(
-      //   `${this.path}/comment/:id`,
-      //   AuthorizationMiddleware,
-      //   validationMiddleware(CreateCommentDto),
-      //   this.commentOnPost
-      // );
+      );
   }
-
-  /**
-   * Retrieves all posts
-   */
-  // private getAllPosts = (
-  //   request: express.Request,
-  //   response: express.Response
-  // ) => {
-  //   this.post.find().then(posts => {
-  //     response.send(posts);
-  //   });
-  // };
 
   private getAllPosts = async (
     request: express.Request,
@@ -88,24 +68,6 @@ class PostsController implements Controller {
       }
     });
   };
-
-  //  /**
-  //  * Gets a post by id
-  //  */
-  // private getPostById = (
-  //   request: express.Request,
-  //   response: express.Response,
-  //   next: express.NextFunction
-  // ) => {
-  //   const id = request.params.id;
-  //   this.post.findById(id).then(post => {
-  //     if (post) {
-  //       response.send(post);
-  //     } else {
-  //       next(new PostNotFoundException(id));
-  //     }
-  //   });
-  // };
 
   /**
    * Updates a post
@@ -158,27 +120,9 @@ class PostsController implements Controller {
     });
     const savedPost = await createdPost.save();
     await savedPost.populate("author").execPopulate();
+    console.log(savedPost);
     response.send(savedPost);
   };
-
-  /**
-   * Comment on a post by id
-   */
-
-  //  //todo: lookup user given username or id, edit post by id, add new comment and userid, 
-  // private commentOnPost = async (
-  //   request: RequestWithUser,
-  //   response: express.Response
-  // ) => {
-  //   const commentData: CreateCommentDto = request.body;
-  //   const createdComment = new this.post({
-  //     ...postData,
-  //     author: request.user._id
-  //   });
-  //   const savedPost = await createdPost.save();
-  //   await savedPost.populate("author").execPopulate();
-  //   response.send(savedPost);
-  // };
 }
 
 export default PostsController;

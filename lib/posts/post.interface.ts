@@ -1,9 +1,9 @@
 interface Post {
   content: string;
   title: string;
+  likes: [];
+  favorites: [];
   comments: [];
 }
-
-//todo: add likes and favorites here also.
 
 export default Post;

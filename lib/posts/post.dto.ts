@@ -9,9 +9,6 @@ class CreatePostDto {
 
   @IsString()
   public title: string;
-
-  // @IsArray()
-  // public comments: Array<>;
 }
 
 export default CreatePostDto;
