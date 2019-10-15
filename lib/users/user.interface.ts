@@ -1,11 +1,11 @@
 interface User {
   _id: any;
-  name: String;
-  email: String;
-  username: String;
-  about: String;
-  location: String;
-  password: String;
+  name: string;
+  email: string;
+  username: string;
+  about: string;
+  location: string;
+  password: string;
   following: [];
   followers: [];
 }
