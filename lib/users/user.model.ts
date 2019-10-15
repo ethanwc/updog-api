@@ -4,8 +4,12 @@ import User from "./user.interface";
 const userSchema = new mongoose.Schema({
   name: String,
   email: String,
+  username: String,
+  about: String,
+  location: String,
   password: String,
-  friends: []
+  following: [],
+  followers: []
 });
 
 const userModel = mongoose.model<User & mongoose.Document>("User", userSchema);
