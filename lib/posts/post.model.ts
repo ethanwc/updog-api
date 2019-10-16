@@ -8,6 +8,7 @@ const postSchema = new mongoose.Schema({
   },
   content: String,
   title: String,
+  date: String,
   likes: [],
   favorites: [],
   comments: []

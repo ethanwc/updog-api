@@ -6,7 +6,7 @@ interface User {
   about: string;
   location: string;
   password: string;
-  following: [];
-  followers: [];
+  following: Array<string>;
+  followers: Array<string>;
 }
 export default User;
