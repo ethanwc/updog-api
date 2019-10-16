@@ -10,7 +10,7 @@ import UserModel from "../users/user.model";
 import LogInDto from "./Login.dto";
 import User from "users/user.interface";
 import "../interfaces/TokenData";
-import UserWithThatUsernameAlreadyExistsException from "exceptions/UserWithThatUsernameAlreadyExistsException";
+import UserWithThatUsernameAlreadyExistsException from "../exceptions/UserWithThatUsernameAlreadyExistsException";
 
 /**
  * Handles login, register, logout for the application.
@@ -76,24 +76,21 @@ class AuthenticationController implements Controller {
     next: express.NextFunction
   ) => {
     const userData: CreateUserDto = request.body;
-    if (await this.user.findOne({ email: userData.email })) {
+    if (await this.user.findOne({ email: userData.email }))
       next(new UserWithThatEmailAlreadyExistsException(userData.email));
-    } else {
-      if (await this.user.findOne({username: userData.username})) {
+    else {
+      if (await this.user.findOne({ username: userData.username }))
         next(new UserWithThatUsernameAlreadyExistsException(userData.email));
+      else {
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        const user = await this.user.create({
+          ...userData,
+          password: hashedPassword
+        });
+        user.password = undefined;
+        const tokenData = this.createToken(user);
+        response.send({ ...user, tokenData });
       }
-        else {
-          const hashedPassword = await bcrypt.hash(userData.password, 10);
-          const user = await this.user.create({
-            ...userData,
-            password: hashedPassword
-          });
-          user.password = undefined;
-          const tokenData = this.createToken(user);
-          response.send({ ...user, tokenData });
-        }
-      }
-     
     }
   };
 
