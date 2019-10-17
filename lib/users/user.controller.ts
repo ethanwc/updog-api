@@ -22,7 +22,8 @@ class UserController implements Controller {
     this.router
       .get(`${this.path}/:id/posts`, this.getAllPostsOfUser)
       .get(`${this.path}/:id/info`, this.getUserInfo)
-      .post(`${this.path}/follow`, authMiddleware, this.followUser);
+      .post(`${this.path}/follow`, authMiddleware, this.followUser)
+      .post(`${this.path}/profile`, authMiddleware, this.updateProfile);
   }
 
   //returns all posts of a user
@@ -131,6 +132,35 @@ class UserController implements Controller {
           next(new NotAuthorizedException("11/77"));
         }
       });
+  };
+
+  //toggles following a user
+  private updateProfile = async (
+    request: RequestWithUser,
+    response: express.Response,
+    next: express.NextFunction
+  ) => {
+    const id: string = request.body.id;
+    const location: string = request.body.location;
+    const about: string = request.body.about;
+
+    this.user.findById(id).then(user => {
+      if (user) {
+        let updatedUser = user.toJSON();
+        updatedUser.location = location;
+        updatedUser.about = about;
+        this.user
+          .findByIdAndUpdate(id, updatedUser, {
+            new: true
+          })
+          .select("-password")
+          .then(user => {
+            if (user) {
+              response.send(user);
+            }
+          });
+      }
+    });
   };
 }
 
