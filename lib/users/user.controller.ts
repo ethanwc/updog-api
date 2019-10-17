@@ -23,7 +23,8 @@ class UserController implements Controller {
       .get(`${this.path}/:id/posts`, this.getAllPostsOfUser)
       .get(`${this.path}/:id/info`, this.getUserInfo)
       .post(`${this.path}/follow`, authMiddleware, this.followUser)
-      .post(`${this.path}/profile`, authMiddleware, this.updateProfile);
+      .post(`${this.path}/profile`, authMiddleware, this.updateProfile)
+      .post(`${this.path}/status`, authMiddleware, this.setStatus);
   }
 
   //returns all posts of a user
@@ -149,6 +150,33 @@ class UserController implements Controller {
         let updatedUser = user.toJSON();
         updatedUser.location = location;
         updatedUser.about = about;
+        this.user
+          .findByIdAndUpdate(id, updatedUser, {
+            new: true
+          })
+          .select("-password")
+          .then(user => {
+            if (user) {
+              response.send(user);
+            }
+          });
+      }
+    });
+  };
+
+  //set's users status
+  private setStatus = async (
+    request: RequestWithUser,
+    response: express.Response,
+    next: express.NextFunction
+  ) => {
+    const id: string = request.body.id;
+    const newStatus: string = request.body.status;
+
+    this.user.findById(id).then(user => {
+      if (user) {
+        let updatedUser = user.toJSON();
+        updatedUser.status = newStatus;
         this.user
           .findByIdAndUpdate(id, updatedUser, {
             new: true

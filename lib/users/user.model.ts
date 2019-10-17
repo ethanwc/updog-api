@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   about: String,
   location: String,
   password: String,
+  status: String,
   following: [],
   followers: []
 });

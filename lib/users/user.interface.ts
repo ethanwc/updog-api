@@ -6,6 +6,7 @@ interface User {
   about: string;
   location: string;
   password: string;
+  status: string;
   following: Array<string>;
   followers: Array<string>;
 }
