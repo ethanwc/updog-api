@@ -34,6 +34,7 @@ async function authMiddleware(
       next(new WrongAuthenticationTokenException("1"));
     }
   } else {
+    console.log(body);
     next(new AuthenticationTokenMissingException("1"));
   }
 }
