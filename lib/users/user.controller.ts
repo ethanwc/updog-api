@@ -84,7 +84,6 @@ class UserController implements Controller {
                   personFollowedBy.splice(
                     personFollowedBy.indexOf(follower_data._id)
                   );
-
                 } else {
                   //add to lists
                   console.log("adding");
@@ -110,15 +109,16 @@ class UserController implements Controller {
                   .findByIdAndUpdate(person._id, updatedPerson, {
                     new: true
                   })
-                  .then(user => {
-                    if (user) {
+                  .select("-password")
+                  .then(user1 => {
+                    if (user1) {
                       this.user
                         .findByIdAndUpdate(follower._id, updatedFollower, {
                           new: true
                         })
-                        .then(user => {
-                          if (user) {
-                            response.send("success");
+                        .then(user2 => {
+                          if (user2) {
+                            response.send(user2);
                           } else next(new FailedFollowingException("1"));
                         });
                     } else next(new FailedFollowingException("1"));
