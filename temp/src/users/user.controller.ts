@@ -55,6 +55,7 @@ class UserController implements Controller {
     response: express.Response,
     next: express.NextFunction
   ) => {
+    
     const persontofollow: string = request.body.followe;
     const follower: string = request.body.follower;
 
