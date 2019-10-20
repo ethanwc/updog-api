@@ -1,0 +1,6 @@
+{
+    "appService.showBuildDuringDeployPrompt": false,
+    "appService.deploySubpath": "",
+    "git.ignoreLimitWarning": true,
+    "appService.defaultWebAppToDeploy": "/subscriptions/71f29136-cedd-4f0b-8ef0-dec0409f914c/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/updog-api"
+}
