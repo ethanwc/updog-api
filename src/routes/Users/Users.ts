@@ -1,4 +1,4 @@
-import { Request, Response, Router, Express } from "express";
+import { Request, Response, Router } from "express";
 import { BAD_REQUEST, OK, NOT_FOUND, CONFLICT } from "http-status-codes";
 
 import { logger } from "@shared";
