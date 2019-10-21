@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
   password: String,
   status: String,
   following: [],
-  followers: []
+  followers: [],
+  chats: []
 });
 
 const userModel = mongoose.model<User & mongoose.Document>("User", userSchema);

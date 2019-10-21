@@ -4,14 +4,11 @@ import { BAD_REQUEST, OK, NOT_FOUND, CONFLICT } from "http-status-codes";
 import { logger } from "@shared";
 import User from "../../dto/User";
 import UserModel from "../../dto/UserModel";
-import PostModel from "../../dto/PostModel";
 
 // Init shared
 const router = Router();
 // User Model
 const User = UserModel;
-// Post Model
-const Post = PostModel;
 
 /******************************************************************************
  *                      Test the Users route - "GET /api/users/test"

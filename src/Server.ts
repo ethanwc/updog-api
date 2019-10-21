@@ -22,6 +22,9 @@ app.use("/api", BaseRouter);
 const staticDir = path.join(__dirname, "public");
 app.use(express.static(staticDir));
 
+/**
+ * Build db uri and connect
+ */
 const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
 const uri = `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_PATH}`;
 mongoose.connect(uri, {

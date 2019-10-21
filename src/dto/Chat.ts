@@ -1,7 +1,8 @@
 import Message from "./Message";
 
 interface Chat {
-  members: [];
+  _id: any;
+  members: Array<String>;
   messages: Array<Message>;
 }
 

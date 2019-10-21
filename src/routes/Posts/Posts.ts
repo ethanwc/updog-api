@@ -7,8 +7,6 @@ import PostModel from "../../dto/PostModel";
 
 // Init shared
 const router = Router();
-// User Model
-const User = UserModel;
 // Post Model
 const Post = PostModel;
 
@@ -76,7 +74,7 @@ router.post("/posts", async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Update a post - "PATCH /api/posts/:id"
+ *                  Update a post - "PATCH /api/posts/:id"
  ******************************************************************************/
 
 router.patch("/posts/:id", async (req: Request, res: Response) => {
