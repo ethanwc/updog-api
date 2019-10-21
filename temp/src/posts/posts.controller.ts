@@ -120,7 +120,6 @@ class PostsController implements Controller {
     });
     const savedPost = await createdPost.save();
     await savedPost.populate("author").execPopulate();
-    console.log(savedPost);
     response.send(savedPost);
   };
 }
