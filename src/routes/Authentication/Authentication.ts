@@ -4,18 +4,16 @@ import {
   CREATED,
   OK,
   NOT_FOUND,
-  UNAUTHORIZED
+  UNAUTHORIZED,
+  CONFLICT
 } from "http-status-codes";
-import { ParamsDictionary } from "express-serve-static-core";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
-
 import { logger } from "@shared";
 import User from "../../dto/User";
-import Post from "../../dto/Post";
 import Login from "../../dto/Login";
+import Register from "../../dto/Register";
 import UserModel from "../../dto/UserModel";
-import PostModel from "../../dto/PostModel";
 
 interface TokenData {
   token: string;
@@ -74,6 +72,37 @@ router.post("/login", async (req: Request, res: Response) => {
         res.send({ ...user, tokenData });
       } else return res.status(UNAUTHORIZED);
     } else return res.status(UNAUTHORIZED);
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message
+    });
+  }
+});
+
+/******************************************************************************
+ *                      Register - "POST /api/auth/register"
+ ******************************************************************************/
+
+router.post("/register", async (req: Request, res: Response) => {
+  try {
+    const userData: Register = req.body;
+    if (await User.findOne({ email: userData.email }))
+      return res.status(CONFLICT);
+    else {
+      if (await User.findOne({ username: userData.username }))
+        return res.status(CONFLICT);
+      else {
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        const user = await User.create({
+          ...userData,
+          password: hashedPassword
+        });
+        user.password = "undefined";
+        const tokenData = createToken(user);
+        res.status(OK).json({ ...user, tokenData });
+      }
+    }
   } catch (err) {
     logger.error(err.message, err);
     return res.status(BAD_REQUEST).json({
