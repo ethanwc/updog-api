@@ -2,7 +2,6 @@ import { Request, Response, Router, Express } from "express";
 import { BAD_REQUEST, CREATED, OK, NOT_FOUND } from "http-status-codes";
 import { logger } from "@shared";
 import Post from "../../dto/Post";
-import UserModel from "../../dto/UserModel";
 import PostModel from "../../dto/PostModel";
 
 // Init shared
@@ -26,7 +25,7 @@ router.post("/:id", async (req: Request, res: Response) => {
   try {
     const userId = req.params.id;
     const posts = await Post.find({ author: userId }).select("-password");
-    return res.status(OK).json({ posts });
+    return res.status(OK).json(posts);
   } catch (err) {
     logger.error(err.message, err);
     return res.status(BAD_REQUEST).json({
@@ -39,7 +38,7 @@ router.post("/:id", async (req: Request, res: Response) => {
  *                      Get all Posts - "GET /api/posts/"
  ******************************************************************************/
 
-router.post("/:id/posts", async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const posts = await Post.find().populate("author", "-password");
     return res.status(OK).json({ posts });
@@ -55,12 +54,12 @@ router.post("/:id/posts", async (req: Request, res: Response) => {
  *                      Create a post - "POST /api/posts/"
  ******************************************************************************/
 
-router.post("/posts", async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
   try {
     const postData: Post = req.body;
     const createdPost = new Post({
       ...postData,
-      author: req.body.user._id
+      author: req.body._id
     });
     const savedPost = await createdPost.save();
     await savedPost.populate("author").execPopulate();
@@ -77,11 +76,15 @@ router.post("/posts", async (req: Request, res: Response) => {
  *                  Update a post - "PATCH /api/posts/:id"
  ******************************************************************************/
 
-router.patch("/posts/:id", async (req: Request, res: Response) => {
+router.patch("/:id", async (req: Request, res: Response) => {
   try {
-    const userId = req.params.id;
-    const posts = await Post.find({ author: userId }).select("-password");
-    return res.status(OK).json({ posts });
+    const id = req.params.id;
+    const postData: Post = req.body;
+    Post.findByIdAndUpdate(id, postData, { new: true }).then(post => {
+      if (post) {
+        res.status(OK).json(post);
+      } else res.status(NOT_FOUND);
+    });
   } catch (err) {
     logger.error(err.message, err);
     return res.status(BAD_REQUEST).json({
@@ -94,7 +97,7 @@ router.patch("/posts/:id", async (req: Request, res: Response) => {
  *                      Delete a post - "DELETE /api/posts/:id"
  ******************************************************************************/
 
-router.delete("/posts/:id", async (req: Request, res: Response) => {
+router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     PostModel.findByIdAndDelete(id).then(response => {

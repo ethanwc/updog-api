@@ -1,5 +1,5 @@
 interface Post {
-  _id: any;
+  authorid: string;
   content: string;
   title: string;
   date: string;

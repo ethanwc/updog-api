@@ -2,10 +2,7 @@ import * as mongoose from "mongoose";
 import Post from "./Post";
 
 const postSchema = new mongoose.Schema({
-  author: {
-    ref: "User",
-    type: mongoose.Schema.Types.ObjectId
-  },
+  authorid: String,
   content: String,
   title: String,
   date: String,

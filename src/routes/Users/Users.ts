@@ -35,10 +35,10 @@ router.get("/all", async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                       Return User Info - "POST /api/users/:id/info"
+ *                       Return User Info - "GET /api/users/:id"
  ******************************************************************************/
 
-router.post("/:id/info", async (req: Request, res: Response) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const userId = req.params.id;
     const info = await User.find({ _id: userId }).select("-password");

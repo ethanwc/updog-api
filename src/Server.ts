@@ -4,9 +4,11 @@ import logger from "morgan";
 import path from "path";
 import mongoose from "mongoose";
 import BaseRouter from "./routes";
+var cors = require("cors");
 
 // Init express
 const app = express();
+app.use(cors());
 
 // Add middleware/settings/routes to express.
 app.use(logger("dev"));
