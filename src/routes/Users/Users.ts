@@ -1,15 +1,8 @@
 import { Request, Response, Router, Express } from "express";
-import {
-  BAD_REQUEST,
-  CREATED,
-  OK,
-  NOT_FOUND,
-  CONFLICT
-} from "http-status-codes";
+import { BAD_REQUEST, OK, NOT_FOUND, CONFLICT } from "http-status-codes";
 
 import { logger } from "@shared";
 import User from "../../dto/User";
-import Post from "../../dto/Post";
 import UserModel from "../../dto/UserModel";
 import PostModel from "../../dto/PostModel";
 

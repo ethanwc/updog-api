@@ -3,7 +3,6 @@ import {
   BAD_REQUEST,
   CREATED,
   OK,
-  NOT_FOUND,
   UNAUTHORIZED,
   CONFLICT
 } from "http-status-codes";
@@ -100,7 +99,7 @@ router.post("/register", async (req: Request, res: Response) => {
         });
         user.password = "undefined";
         const tokenData = createToken(user);
-        res.status(OK).json({ ...user, tokenData });
+        res.status(CREATED).json({ ...user, tokenData });
       }
     }
   } catch (err) {
