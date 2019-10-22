@@ -51,11 +51,15 @@ router.get("/:id/all", async (req: Request, res: Response) => {
     const userid = req.params.id;
     User.findById(userid).then(async user => {
       if (user) {
-        console.log("user is: ", user.name);
-        let chats = [];
+        let chats: Array<Chat> = [];
         for (const c of user.chats) {
-          const messages = await Message.find({ chatid: c });
-          chats.push(messages);
+          await Chat.findById(c).then(async chat => {
+            if (chat) {
+              console.log(chat.members);
+              const messages = await Message.find({ chatid: c });
+              chats.push({ _id: c, members: chat.members, messages: messages });
+            }
+          });
         }
         return res.status(OK).json(chats);
       } else return res.status(NOT_FOUND);
@@ -85,7 +89,8 @@ router.post("/create", async (req: Request, res: Response) => {
               member2.chats.includes(element)
             );
 
-            if (intersection) return res.status(OK).json(intersection);
+            if (intersection.length > 0)
+              return res.status(OK).json(intersection);
             else {
               //create new chat since one doesn't exist between users
               const newChat = new Chat({
