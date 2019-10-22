@@ -1,5 +1,6 @@
 import * as mongoose from "mongoose";
 import User from "./User";
+import Chat from "./Chat";
 
 const userSchema = new mongoose.Schema({
   name: String,
@@ -11,7 +12,7 @@ const userSchema = new mongoose.Schema({
   status: String,
   following: [],
   followers: [],
-  chats: []
+  chats: Array<Chat>()
 });
 
 const userModel = mongoose.model<User & mongoose.Document>("User", userSchema);

@@ -25,18 +25,17 @@ router.get("/test", async (req: Request, res: Response) =>
 );
 
 /******************************************************************************
- *                  Create a new Chat - "POST /api/chat"
+ *           Get all messages for a chat - "POST /api/chat/:id"
  ******************************************************************************/
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/id", async (req: Request, res: Response) => {
   try {
-    const newChat = new Chat({
-      members: req.body.members,
-      messages: []
+    const id = req.params.id;
+    const chatInfo = Chat.findById(id).then(chat => {
+      if (chat) {
+        console.log(chat);
+      }
     });
-    //todo: check if chat already exists.
-    const savedChat = await newChat.save();
-    return res.status(CREATED).json({ savedChat });
   } catch (err) {
     logger.error(err.message, err);
     return res.status(BAD_REQUEST).json({
@@ -46,7 +45,58 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                      Delete a chat - "DELETE /api/chat/:id"
+ *                  Create a new Chat - "POST /api/chat/create"
+ ******************************************************************************/
+
+router.post("/create", async (req: Request, res: Response) => {
+  try {
+    //checks if two users are in the same chat
+    const member1 = req.body.members[0];
+    const member2 = req.body.members[1];
+    User.findById(member1).then(member1 => {
+      if (member1) {
+        User.findById(member2).then(async member2 => {
+          if (member2) {
+            const intersection = member1.chats.filter(element =>
+              member2.chats.includes(element)
+            );
+
+            if (intersection) return res.status(OK).json(intersection);
+            else {
+              //create new chat since one doesn't exist between users
+              const newChat = new Chat({
+                members: req.body.members,
+                messages: []
+              });
+              const savedChat = await newChat.save();
+
+              //add chatid to both member's profile data
+              member1.chats.push(savedChat._id);
+              User.findByIdAndUpdate(member1._id, member1).then(_ => {
+                User.findById(member2).then(member2 => {
+                  if (member2) {
+                    member2.chats.push(savedChat._id);
+                    User.findByIdAndUpdate(member2._id, member2).then(_ => {
+                      return res.status(CREATED).json({ savedChat });
+                    });
+                  } else return res.status(NOT_FOUND);
+                });
+              });
+            }
+          } else return res.status(NOT_FOUND);
+        });
+      } else return res.status(NOT_FOUND);
+    });
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message
+    });
+  }
+});
+
+/******************************************************************************
+ *                    Delete a chat - "DELETE /api/chat/:id"
  ******************************************************************************/
 
 router.delete("/:id", async (req: Request, res: Response) => {
@@ -55,31 +105,6 @@ router.delete("/:id", async (req: Request, res: Response) => {
     ChatModel.findByIdAndDelete(chatId).then(response => {
       if (response) return res.status(OK);
       else return res.status(NOT_FOUND);
-    });
-  } catch (err) {
-    logger.error(err.message, err);
-    return res.status(BAD_REQUEST).json({
-      error: err.message
-    });
-  }
-});
-
-/******************************************************************************
- *     Check if a chat exists between two users - "POST /api/chat/lookup"
- ******************************************************************************/
-
-router.post("/lookup", async (req: Request, res: Response) => {
-  try {
-    const member1 = req.body.members[0];
-    const member2 = req.body.members[1];
-    User.findById(member1).then(member1 => {
-      if (member1) {
-        member1.chats.forEach(element => {
-          if (element.members.includes(member2))
-            return res.status(OK).json(element._id);
-        });
-        return res.status(NOT_FOUND).json(0);
-      }
     });
   } catch (err) {
     logger.error(err.message, err);
