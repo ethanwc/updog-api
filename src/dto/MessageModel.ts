@@ -2,6 +2,7 @@ import * as mongoose from "mongoose";
 import Message from "./Message";
 
 const messageSchema = new mongoose.Schema({
+  chatid: String,
   author: String,
   date: String,
   content: String,

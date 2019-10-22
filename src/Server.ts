@@ -29,6 +29,7 @@ app.use(express.static(staticDir));
  */
 const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
 const uri = `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_PATH}`;
+
 mongoose.connect(uri, {
   useUnifiedTopology: true,
   useNewUrlParser: true

@@ -42,6 +42,33 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
+ * Get all chats and associated messages for a user - "get /api/chat/:id/all"
+ ******************************************************************************/
+
+router.get("/:id/all", async (req: Request, res: Response) => {
+  //want all messages for each chat
+  try {
+    const userid = req.params.id;
+    User.findById(userid).then(async user => {
+      if (user) {
+        console.log("user is: ", user.name);
+        let chats = [];
+        for (const c of user.chats) {
+          const messages = await Message.find({ chatid: c });
+          chats.push(messages);
+        }
+        return res.status(OK).json(chats);
+      } else return res.status(NOT_FOUND);
+    });
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message
+    });
+  }
+});
+
+/******************************************************************************
  *                  Create a new Chat - "POST /api/chat/create"
  ******************************************************************************/
 
@@ -100,14 +127,18 @@ router.post("/message", async (req: Request, res: Response) => {
   try {
     //todo: use pushy here and add listener in frontend
     const chatId = req.body.chatId;
-    const messageData: Message = req.body;
+    let messageData: Message = req.body;
+    messageData.chatid = chatId;
     const createdMessage = new Message(messageData);
     const savedMessage = await createdMessage.save();
     const messageId = savedMessage._id;
     ChatModel.findById(chatId).then(chat => {
       if (chat) {
         chat.messages.push(messageId);
-        return res.status(OK);
+        ChatModel.findByIdAndUpdate(chatId, chat).then(chat => {
+          if (chat) return res.status(CREATED).json(chat);
+          else return res.status(NOT_FOUND);
+        });
       } else return res.status(NOT_FOUND);
     });
   } catch (err) {
