@@ -5,7 +5,7 @@ const messageSchema = new mongoose.Schema({
   author: String,
   date: String,
   content: String,
-  type: Number
+  type: String
 });
 
 const messageModel = mongoose.model<Message & mongoose.Document>(

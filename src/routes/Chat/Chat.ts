@@ -25,17 +25,14 @@ router.get("/test", async (req: Request, res: Response) =>
 );
 
 /******************************************************************************
- *           Get all messages for a chat - "POST /api/chat/:id"
+ *           Get all messages for a chat - "get /api/chat/:id"
  ******************************************************************************/
 
-router.post("/id", async (req: Request, res: Response) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const chatInfo = Chat.findById(id).then(chat => {
-      if (chat) {
-        console.log(chat);
-      }
-    });
+    const messages = await Message.find({ chatid: id });
+    return res.status(OK).json(messages);
   } catch (err) {
     logger.error(err.message, err);
     return res.status(BAD_REQUEST).json({
@@ -96,25 +93,6 @@ router.post("/create", async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                    Delete a chat - "DELETE /api/chat/:id"
- ******************************************************************************/
-
-router.delete("/:id", async (req: Request, res: Response) => {
-  try {
-    const chatId = req.params.id;
-    ChatModel.findByIdAndDelete(chatId).then(response => {
-      if (response) return res.status(OK);
-      else return res.status(NOT_FOUND);
-    });
-  } catch (err) {
-    logger.error(err.message, err);
-    return res.status(BAD_REQUEST).json({
-      error: err.message
-    });
-  }
-});
-
-/******************************************************************************
  *              Send a message to a chat - "POST /api/chat/message"
  ******************************************************************************/
 
@@ -122,7 +100,7 @@ router.post("/message", async (req: Request, res: Response) => {
   try {
     //todo: use pushy here and add listener in frontend
     const chatId = req.body.chatId;
-    const messageData: Message = req.body.message;
+    const messageData: Message = req.body;
     const createdMessage = new Message(messageData);
     const savedMessage = await createdMessage.save();
     const messageId = savedMessage._id;
@@ -140,6 +118,24 @@ router.post("/message", async (req: Request, res: Response) => {
   }
 });
 
+/******************************************************************************
+ *                    Delete a chat - "DELETE /api/chat/:id"
+ ******************************************************************************/
+
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const chatId = req.params.id;
+    ChatModel.findByIdAndDelete(chatId).then(response => {
+      if (response) return res.status(OK);
+      else return res.status(NOT_FOUND);
+    });
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message
+    });
+  }
+});
 /******************************************************************************
  *                                     Export
  ******************************************************************************/

@@ -2,7 +2,7 @@ interface Message {
   author: string;
   date: string;
   content: string;
-  type: number;
+  type: string;
 }
 
 export default Message;
