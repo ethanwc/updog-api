@@ -9,6 +9,7 @@ interface User {
   location: string;
   password: string;
   status: string;
+  imageurl: string;
   following: Array<string>;
   followers: Array<string>;
   chats: Array<Chat>;

@@ -140,9 +140,11 @@ router.post("/message", async (req: Request, res: Response) => {
     ChatModel.findById(chatId).then(chat => {
       if (chat) {
         chat.messages.push(messageId);
-        ChatModel.findByIdAndUpdate(chatId, chat).then(chat => {
-          if (chat) return res.status(CREATED).json(chat);
-          else return res.status(NOT_FOUND);
+        ChatModel.findByIdAndUpdate(chatId, chat).then(async chat => {
+          if (chat) {
+            const messages = await Message.find({ chatid: chat._id });
+            return res.status(CREATED).json({ chat: chat, messages: messages });
+          } else return res.status(NOT_FOUND);
         });
       } else return res.status(NOT_FOUND);
     });

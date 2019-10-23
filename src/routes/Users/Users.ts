@@ -1,9 +1,15 @@
 import { Request, Response, Router } from "express";
 import { BAD_REQUEST, OK, NOT_FOUND, CONFLICT } from "http-status-codes";
-
 import { logger } from "@shared";
 import User from "../../dto/User";
 import UserModel from "../../dto/UserModel";
+var cloudinary = require("cloudinary");
+
+cloudinary.config({
+  cloud_name: "dk4gnl6ww",
+  api_key: "697228748912723",
+  api_secret: "sZAxgeV101rg2N4-BjhUGA4R9cE"
+});
 
 // Init shared
 const router = Router();
@@ -162,6 +168,37 @@ router.post("/profile", async (req: Request, res: Response) => {
   }
 });
 
+/******************************************************************************
+ *                       Set Profile Image - "POST /api/users/image"
+ ******************************************************************************/
+
+router.post("/image", async (req: Request, res: Response) => {
+  try {
+    const id = req.body.id;
+    const url = req.body.url;
+
+    User.findById(id).then(user => {
+      if (user) {
+        let updatedUser = user.toJSON();
+        updatedUser.imageurl = url;
+        User.findByIdAndUpdate(id, updatedUser, {
+          new: true
+        })
+          .select("-password")
+          .then(user => {
+            if (user) {
+              res.status(OK).json(user);
+            }
+          });
+      } else res.status(NOT_FOUND);
+    });
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message
+    });
+  }
+});
 /******************************************************************************
  *                    Update Status - "POST /api/users/status"
  ******************************************************************************/

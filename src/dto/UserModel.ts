@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   location: String,
   password: String,
   status: String,
+  imageurl: String,
   following: [],
   followers: [],
   chats: Array<Chat>()
