@@ -12,7 +12,7 @@ import User from "../../dto/User";
 import Login from "../../dto/Login";
 import Register from "../../dto/Register";
 import UserModel from "../../dto/UserModel";
-var bcrypt = require('bcryptjs');
+var bcrypt = require("bcryptjs");
 interface TokenData {
   token: string;
   expiresIn: number;
@@ -68,8 +68,8 @@ router.post("/login", async (req: Request, res: Response) => {
         user.password = "undefined";
         const tokenData = createToken(user);
         res.send({ ...user, tokenData });
-      } else return res.status(UNAUTHORIZED);
-    } else return res.status(UNAUTHORIZED);
+      } else res.status(UNAUTHORIZED).send();
+    } else res.status(UNAUTHORIZED).send();
   } catch (err) {
     logger.error(err.message, err);
     return res.status(BAD_REQUEST).json({
