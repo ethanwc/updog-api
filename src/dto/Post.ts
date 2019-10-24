@@ -3,6 +3,7 @@ interface Post {
   content: string;
   title: string;
   date: string;
+  type: string;
   likes: [];
   favorites: [];
   comments: [];

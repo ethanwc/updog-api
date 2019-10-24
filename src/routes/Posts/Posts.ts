@@ -57,6 +57,7 @@ router.get("/", async (req: Request, res: Response) => {
 router.post("/", async (req: Request, res: Response) => {
   try {
     const postData: Post = req.body;
+    console.log(postData);
     const createdPost = new Post({
       ...postData,
       author: req.body._id

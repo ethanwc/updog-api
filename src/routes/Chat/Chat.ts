@@ -55,7 +55,6 @@ router.get("/:id/all", async (req: Request, res: Response) => {
         for (const c of user.chats) {
           await Chat.findById(c).then(async chat => {
             if (chat) {
-              console.log(chat.members);
               const messages = await Message.find({ chatid: c });
               chats.push({ _id: c, members: chat.members, messages: messages });
             }
@@ -88,7 +87,7 @@ router.post("/create", async (req: Request, res: Response) => {
             const intersection = member1.chats.filter(element =>
               member2.chats.includes(element)
             );
-
+            //todo: return all chats and id of new or found 1
             if (intersection.length > 0)
               return res.status(OK).json(intersection);
             else {
@@ -106,7 +105,7 @@ router.post("/create", async (req: Request, res: Response) => {
                   if (member2) {
                     member2.chats.push(savedChat._id);
                     User.findByIdAndUpdate(member2._id, member2).then(_ => {
-                      return res.status(CREATED).json({ savedChat });
+                      return res.status(CREATED).json(savedChat._id);
                     });
                   } else return res.status(NOT_FOUND);
                 });
