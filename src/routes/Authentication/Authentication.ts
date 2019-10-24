@@ -6,14 +6,13 @@ import {
   UNAUTHORIZED,
   CONFLICT
 } from "http-status-codes";
-import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { logger } from "@shared";
 import User from "../../dto/User";
 import Login from "../../dto/Login";
 import Register from "../../dto/Register";
 import UserModel from "../../dto/UserModel";
-
+var bcrypt = require('bcryptjs');
 interface TokenData {
   token: string;
   expiresIn: number;
